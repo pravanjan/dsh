@@ -25,7 +25,7 @@ export async function handlePipe(registry: PluginRegistry, argv: string[]): Prom
   for await (const chunk of process.stdin as AsyncIterable<Buffer>) {
     stdinData += chunk.toString("utf-8");
   }
-  stdinData = stdinData.trimEnd();
+  stdinData = stdinData.trim();
 
   // Build inputs: first field from stdin, named flags from argv
   const inputs: Record<string, string> = {};
@@ -41,7 +41,7 @@ export async function handlePipe(registry: PluginRegistry, argv: string[]): Prom
     const flag = flags[i];
     const value = flags[i + 1];
     if (flag.startsWith("--") && !value.startsWith("--")) {
-      inputs[flag.slice(2)] = value;
+      inputs[flag.slice(2)] = value.trim();
       i++; // skip the value token
     }
   }

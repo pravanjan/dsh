@@ -1,5 +1,8 @@
 import React from "react";
 import { render } from "ink";
+import { readFileSync } from "fs";
+import { fileURLToPath } from "url";
+import { dirname, resolve } from "path";
 import { PluginRegistry } from "../src/core/PluginRegistry.js";
 import { handlePipe } from "../src/core/PipeHandler.js";
 import { App } from "../src/app.js";
@@ -11,12 +14,17 @@ import { convertersPlugin } from "../src/plugins/converters/index.js";
 import { datetimePlugin } from "../src/plugins/datetime/index.js";
 import { stringsPlugin } from "../src/plugins/strings/index.js";
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const pkg = JSON.parse(
+  readFileSync(resolve(__dirname, "../package.json"), "utf-8")
+) as { version: string };
+
 const argv = process.argv;
 const debug = argv.includes("--debug");
 
 // --version / -v
 if (argv.includes("--version") || argv.includes("-v")) {
-  console.log("1.0.0");
+  console.log(pkg.version);
   process.exit(0);
 }
 

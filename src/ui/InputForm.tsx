@@ -90,7 +90,7 @@ export function InputForm({ utility, initialValues, onSubmit, onBack }: Props) {
                       label: o.label,
                       value: o.value,
                     }))}
-                    onSelect={(item: { label: string; value: string }) =>
+                    onSelect={(item: { key?: string; label: string; value: string }) =>
                       advance(field.name, item.value)
                     }
                   />
