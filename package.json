@@ -4,7 +4,7 @@
   "description": "Interactive CLI developer toolkit",
   "type": "module",
   "bin": {
-    "devtool": "./dist/devtool.js"
+    "dsh": "./dist/devtool.js"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

@@ -1,6 +1,6 @@
-# dsh — DevTool CLI
+# dsh — Developer Shell Toolkit
 
-> A fast, interactive developer toolkit for the terminal. Runs entirely on your local machine — no network calls, no telemetry, no accounts.
+> A fast, interactive CLI toolkit for everyday developer tasks. Runs entirely on your local machine — no network calls, no telemetry, no accounts required.
 
 [![Node.js](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen)](https://nodejs.org)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](LICENSE)
@@ -11,9 +11,11 @@
 
 ## What is dsh?
 
-`dsh` bundles the tools developers reach for every day — Base64, JWT decoding, JSON formatting, UUID generation, hashing, and more — into a single globally installable CLI. It works in two ways:
+`dsh` bundles the tools developers reach for every day — Base64, JWT decoding, JSON formatting, UUID generation, hashing, regex testing, and more — into a single globally installable command. No more switching between browser tabs or one-off scripts.
 
-- **Interactive TUI** — arrow-key menus, text input forms, syntax-highlighted results
+It works in two modes:
+
+- **Interactive TUI** — arrow-key menus, text input forms, syntax-highlighted results, copy to clipboard
 - **Pipe / stdin mode** — compose with Unix tools in scripts and one-liners
 
 ---
@@ -66,7 +68,7 @@ git clone https://github.com/your-username/dsh.git
 cd dsh
 npm install
 npm run build
-npm link           # makes `devtool` available globally
+npm link           # makes `dsh` available globally
 ```
 
 ---
@@ -75,22 +77,22 @@ npm link           # makes `devtool` available globally
 
 ```bash
 # Launch the interactive TUI
-devtool
+dsh
 
-# Or use pipe mode directly
-echo "hello world"   | devtool base64:encode
-echo '{"name":"dsh"}' | devtool json:format
-date +%s             | devtool ts:todate
+# Or go straight to pipe mode
+echo "hello world"    | dsh base64:encode
+echo '{"name":"dsh"}' | dsh json:format
+date +%s              | dsh ts:todate
 ```
 
 ---
 
 ## Interactive TUI
 
-Run `devtool` with no arguments to launch the menu-driven interface.
+Run `dsh` with no arguments to launch the menu-driven interface.
 
 ```
-DevTool CLI  —  developer toolkit
+dsh — Developer Shell Toolkit
 
 Select a category:
 > Encoding / Decoding       Encode and decode strings using various formats
@@ -98,7 +100,7 @@ Select a category:
   JWT Tools                 Decode and verify JSON Web Tokens
   Generators                Generate UUIDs, passwords, and random strings
   Format Converters         Convert between JSON, YAML, XML, and CSV formats
-  Date / Time               Unix timestamp conversion, timezone conversion, and date diff
+  Date / Time               Unix timestamp conversion, timezone conversion, date diff
   String Utilities          Case conversion, regex testing, and line diff
 
 [↑↓] Navigate  [Enter] Select  [Q] Quit
@@ -108,8 +110,8 @@ Select a category:
 
 ```
 Main Menu  →  Sub Menu  →  Input Form  →  Result View
-                ↑                              |
-                └──────────── [B] Back ────────┘
+               ↑                               |
+               └──────────── [B] Back ─────────┘
 ```
 
 **Result view keyboard shortcuts:**
@@ -125,7 +127,13 @@ Main Menu  →  Sub Menu  →  Input Form  →  Result View
 
 ## Pipe Mode
 
-When stdin is not a TTY, `dsh` runs non-interactively. The first input field always comes from stdin. Additional fields are passed as `--flag value` arguments.
+When stdin is not a TTY, `dsh` runs non-interactively. The primary input always comes from stdin. Additional fields are passed as `--flag value` arguments.
+
+**Syntax:**
+
+```bash
+echo "<input>" | dsh <alias> [--flag value]
+```
 
 **Exit codes:**
 
@@ -135,7 +143,7 @@ When stdin is not a TTY, `dsh` runs non-interactively. The first input field alw
 | `1` | Runtime error (bad input, parse failure, etc.) |
 | `2` | Unknown alias or missing alias argument |
 
-Add `--debug` for full stack traces on error.
+Add `--debug` to any command for full stack traces on errors.
 
 ---
 
@@ -143,20 +151,20 @@ Add `--debug` for full stack traces on error.
 
 ```bash
 # Base64
-echo "hello world"     | devtool base64:encode    # aGVsbG8gd29ybGQ=
-echo "aGVsbG8gd29ybGQ=" | devtool base64:decode   # hello world
+echo "hello world"      | dsh base64:encode    # aGVsbG8gd29ybGQ=
+echo "aGVsbG8gd29ybGQ=" | dsh base64:decode    # hello world
 
 # URL encoding
-echo "hello world & co" | devtool url:encode      # hello%20world%20%26%20co
-echo "hello%20world"    | devtool url:decode       # hello world
+echo "hello world & co" | dsh url:encode       # hello%20world%20%26%20co
+echo "hello%20world"    | dsh url:decode        # hello world
 
 # HTML encoding
-echo '<script>alert("xss")</script>' | devtool html:encode
+echo '<script>alert("xss")</script>' | dsh html:encode
 # &lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;
 
 # Hex encoding
-echo "hello"           | devtool hex:encode        # 68656c6c6f
-echo "68656c6c6f"      | devtool hex:decode        # hello
+echo "hello"            | dsh hex:encode        # 68656c6c6f
+echo "68656c6c6f"       | dsh hex:decode        # hello
 ```
 
 ---
@@ -164,13 +172,13 @@ echo "68656c6c6f"      | devtool hex:decode        # hello
 ### Hashing
 
 ```bash
-echo "hello"  | devtool hash:md5      # 5d41402abc4b2a76b9719d911017c592
-echo "hello"  | devtool hash:sha1     # aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d
-echo "hello"  | devtool hash:sha256   # 2cf24dba5fb0a30e26e83b2ac5b9e29e...
-echo "hello"  | devtool hash:sha512   # 9b71d224bd62f3785d96d46ad3ea3d73...
+echo "hello" | dsh hash:md5      # 5d41402abc4b2a76b9719d911017c592
+echo "hello" | dsh hash:sha1     # aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d
+echo "hello" | dsh hash:sha256   # 2cf24dba5fb0a30e26e83b2ac5b9e29e...
+echo "hello" | dsh hash:sha512   # 9b71d224bd62f3785d96d46ad3ea3d73...
 
 # HMAC-SHA256 — pass the secret key as a flag
-echo "my message" | devtool hash:hmac --key "my-secret-key"
+echo "my message" | dsh hash:hmac --key "my-secret-key"
 ```
 
 ---
@@ -178,14 +186,14 @@ echo "my message" | devtool hash:hmac --key "my-secret-key"
 ### JWT
 
 ```bash
-# Decode any JWT (no secret needed) — shows header, payload, expiry status
-cat token.txt | devtool jwt:decode
+# Decode any JWT (no secret needed) — shows header, payload, and expiry status
+cat token.txt | dsh jwt:decode
 
 # Verify signature with an HMAC secret
-cat token.txt | devtool jwt:verify --secret "your-secret"
+cat token.txt | dsh jwt:verify --secret "your-secret"
 
 # Verify with an RSA public key
-cat token.txt | devtool jwt:verify --secret "$(cat public.pem)"
+cat token.txt | dsh jwt:verify --secret "$(cat public.pem)"
 ```
 
 Decoded output includes human-readable `iat_human`, `exp_human`, and an `(EXPIRED)` marker when applicable.
@@ -196,18 +204,18 @@ Decoded output includes human-readable `iat_human`, `exp_human`, and an `(EXPIRE
 
 ```bash
 # UUIDs
-devtool gen:uuid4 < /dev/null          # 3f6c1e2a-9b4d-4f8a-a1e2-3c7f9d0b1234
-devtool gen:uuid7 < /dev/null          # time-ordered UUID v7
+dsh gen:uuid4 < /dev/null     # 3f6c1e2a-9b4d-4f8a-a1e2-3c7f9d0b1234
+dsh gen:uuid7 < /dev/null     # time-ordered UUID v7
 
 # Generate multiple at once
-echo "5" | devtool gen:uuid4           # 5 UUIDs, one per line
+echo "5" | dsh gen:uuid4      # 5 UUIDs, one per line
 
 # Password (configurable via flags)
-echo "" | devtool gen:password --length 24 --symbols yes --numbers yes --uppercase yes
+echo "" | dsh gen:password --length 24 --symbols yes --numbers yes --uppercase yes
 
 # Random string with charset
-echo "" | devtool gen:random --length 32 --charset hex
-echo "" | devtool gen:random --length 16 --custom "ABCDEF0123456789"
+echo "" | dsh gen:random --length 32 --charset hex
+echo "" | dsh gen:random --length 16 --custom "ABCDEF0123456789"
 ```
 
 ---
@@ -216,22 +224,21 @@ echo "" | devtool gen:random --length 16 --custom "ABCDEF0123456789"
 
 ```bash
 # JSON
-echo '{"name":"dsh","version":1}' | devtool json:format    # pretty-print
-echo '{ "a": 1 }'                 | devtool json:minify    # {"a":1}
-echo '{"valid":true}'              | devtool json:validate  # Valid JSON
+echo '{"name":"dsh","version":1}' | dsh json:format    # pretty-print
+echo '{ "a": 1 }'                 | dsh json:minify    # {"a":1}
+echo '{"valid":true}'              | dsh json:validate  # Valid JSON
 
 # YAML <-> JSON
-cat config.yaml | devtool yaml:tojson
-echo '{"name":"dsh"}' | devtool json:toyaml
+cat config.yaml      | dsh yaml:tojson
+echo '{"name":"dsh"}' | dsh json:toyaml
 
 # XML <-> JSON
-cat data.xml    | devtool xml:tojson
-echo '{"root":{"key":"val"}}' | devtool json:toxml
+cat data.xml                    | dsh xml:tojson
+echo '{"root":{"key":"val"}}'   | dsh json:toxml
 
 # CSV -> JSON
-cat users.csv   | devtool csv:tojson
-# Without header row:
-cat data.csv    | devtool csv:tojson --header no
+cat users.csv | dsh csv:tojson
+cat data.csv  | dsh csv:tojson --header no    # without header row
 ```
 
 ---
@@ -240,28 +247,28 @@ cat data.csv    | devtool csv:tojson --header no
 
 ```bash
 # Unix timestamp -> human date
-echo "1700000000"              | devtool ts:todate
+echo "1700000000" | dsh ts:todate
 # Local : 2023-11-15 03:43:20
 # UTC   : 2023-11-14 22:13:20 UTC
 # ISO   : 2023-11-14T22:13:20.000Z
 
 # Also accepts milliseconds automatically
-echo "1700000000000"           | devtool ts:todate
+echo "1700000000000" | dsh ts:todate
 
 # Human date -> Unix timestamp
-echo "2024-06-15 12:00:00"     | devtool ts:fromdate
+echo "2024-06-15 12:00:00" | dsh ts:fromdate
 
 # Current time as Unix timestamp
-date +%s                       | devtool ts:todate
+date +%s | dsh ts:todate
 
 # Timezone conversion (IANA timezone names)
-echo "2024-03-15 09:00:00" | devtool dt:tzconvert --from "America/New_York" --to "Asia/Kolkata"
+echo "2024-03-15 09:00:00" | dsh dt:tzconvert --from "America/New_York" --to "Asia/Kolkata"
 # 2024-03-15 09:00:00 America/New_York
 #   →
 # 2024-03-15 19:30:00 Asia/Kolkata
 
 # Date diff
-echo "2024-01-01" | devtool dt:diff --end "2024-12-31"
+echo "2024-01-01" | dsh dt:diff --end "2024-12-31"
 # Total  : 365d 0h 0m 0s
 # Days   : 365
 # Hours  : 8760
@@ -273,24 +280,22 @@ echo "2024-01-01" | devtool dt:diff --end "2024-12-31"
 ### String Utilities
 
 ```bash
-# Case conversion
-echo "hello_world_foo"    | devtool str:camel    # helloWorldFoo
-echo "helloWorld"         | devtool str:camel    # helloWorld (idempotent)
+# Case conversion (default: camelCase)
+echo "hello_world_foo" | dsh str:camel    # helloWorldFoo
 
-# Other targets via --target flag (default: camel)
-echo "hello world"  | devtool str:camel --target pascal       # HelloWorld
-echo "hello world"  | devtool str:camel --target snake        # hello_world
-echo "hello world"  | devtool str:camel --target kebab        # hello-world
-echo "hello world"  | devtool str:camel --target upper_snake  # HELLO_WORLD
-echo "HelloWorld"   | devtool str:camel --target lower        # hello world
+# Other targets via --target flag
+echo "hello world" | dsh str:camel --target pascal       # HelloWorld
+echo "hello world" | dsh str:camel --target snake        # hello_world
+echo "hello world" | dsh str:camel --target kebab        # hello-world
+echo "hello world" | dsh str:camel --target upper_snake  # HELLO_WORLD
+echo "HelloWorld"  | dsh str:camel --target lower        # hello world
 
-# Regex tester
-echo "The quick brown fox" | devtool str:regex --pattern "\b\w{5}\b" --flags gi
-# Returns JSON: { "totalMatches": 2, "matches": [...] }
+# Regex tester — returns match groups as JSON
+echo "The quick brown fox" | dsh str:regex --pattern "\b\w{5}\b" --flags gi
+# { "totalMatches": 2, "matches": [...] }
 
-# Line diff
-echo "line1\nline2\nline3" | devtool str:diff --textB "line1\nchanged\nline3"
-# Outputs unified diff format
+# Line diff — outputs unified diff format
+echo "line1\nline2\nline3" | dsh str:diff --textB "line1\nchanged\nline3"
 ```
 
 ---
@@ -312,8 +317,8 @@ echo "line1\nline2\nline3" | devtool str:diff --textB "line1\nchanged\nline3"
 | `hash:sha256` | SHA-256 hash |
 | `hash:sha512` | SHA-512 hash |
 | `hash:hmac` | HMAC-SHA256 (`--key`) |
-| `jwt:decode` | Decode JWT |
-| `jwt:verify` | Verify JWT (`--secret`) |
+| `jwt:decode` | Decode JWT (no secret required) |
+| `jwt:verify` | Verify JWT signature (`--secret`) |
 | `gen:uuid4` | Generate UUID v4 |
 | `gen:uuid7` | Generate UUID v7 (time-ordered) |
 | `gen:password` | Generate password (`--length --symbols --numbers --uppercase`) |
@@ -321,13 +326,13 @@ echo "line1\nline2\nline3" | devtool str:diff --textB "line1\nchanged\nline3"
 | `json:format` | Pretty-print JSON (`--indent 2\|4\|tab`) |
 | `json:minify` | Minify JSON |
 | `json:validate` | Validate JSON |
-| `yaml:tojson` | YAML to JSON |
-| `json:toyaml` | JSON to YAML |
-| `xml:tojson` | XML to JSON |
-| `json:toxml` | JSON to XML |
-| `csv:tojson` | CSV to JSON (`--header yes\|no`) |
-| `ts:todate` | Unix timestamp to human date |
-| `ts:fromdate` | Human date to Unix timestamp |
+| `yaml:tojson` | YAML → JSON |
+| `json:toyaml` | JSON → YAML |
+| `xml:tojson` | XML → JSON |
+| `json:toxml` | JSON → XML |
+| `csv:tojson` | CSV → JSON (`--header yes\|no`) |
+| `ts:todate` | Unix timestamp → human date |
+| `ts:fromdate` | Human date → Unix timestamp |
 | `dt:tzconvert` | Timezone conversion (`--from --to`) |
 | `dt:diff` | Date difference (`--end`) |
 | `str:camel` | Case conversion (`--target camel\|pascal\|snake\|kebab\|upper_snake\|lower`) |
@@ -338,7 +343,7 @@ echo "line1\nline2\nline3" | devtool str:diff --textB "line1\nchanged\nline3"
 
 ## Plugin System
 
-`dsh` supports community plugins. Any plugin installed at `~/.devtool/plugins/<name>/index.js` is automatically loaded at startup.
+`dsh` supports community plugins. Any plugin installed at `~/.devtool/plugins/<name>/index.js` is automatically discovered and loaded at startup.
 
 ### Installing a community plugin
 
@@ -351,7 +356,7 @@ npm install --prefix my-plugin some-devtool-plugin
 
 ### Writing your own plugin
 
-A plugin is a compiled `.js` file with a default export that satisfies the `PluginManifest` interface:
+A plugin is a compiled `.js` file with a default export satisfying the `PluginManifest` interface:
 
 ```typescript
 import type { PluginManifest } from 'dsh';
@@ -387,7 +392,7 @@ const plugin: PluginManifest = {
 export default plugin;
 ```
 
-Place the compiled output at `~/.devtool/plugins/my-plugin/index.js` and run `devtool` — your utility will appear in the TUI and be reachable via its `pipeAlias`.
+Place the compiled output at `~/.devtool/plugins/my-plugin/index.js` and run `dsh` — your utility will appear in the TUI and be reachable via its `pipeAlias`.
 
 > See [`PLUGIN_GUIDE.md`](PLUGIN_GUIDE.md) for the complete authoring contract, TypeScript types, and publishing guidance.
 
@@ -417,7 +422,7 @@ npm run lint
 
 # 7. Link globally to test the CLI
 npm link
-devtool --version
+dsh --version
 ```
 
 ### Scripts
@@ -473,7 +478,7 @@ dsh/
 
 ## Contributing
 
-Contributions are welcome! Here's how to get started:
+Contributions are welcome. Here's how to get started:
 
 1. **Fork** the repository and create a feature branch:
    ```bash
@@ -482,17 +487,17 @@ Contributions are welcome! Here's how to get started:
 
 2. **Write your code.** Every utility must have a pure `run()` function and at least 3 unit tests.
 
-3. **Run the full test suite:**
+3. **Run the full test suite before opening a PR:**
    ```bash
    npm test
    npm run lint
    ```
 
-4. **Open a pull request** with a clear description of what you've added.
+4. **Open a pull request** with a clear description of what you've added and why.
 
 ### Guidelines
 
-- All utility `run()` functions must be **pure** — no I/O, no side effects, no `process` access
+- All `run()` functions must be **pure** — no I/O, no side effects, no `process` access
 - No `any` types — use `unknown` with type guards for dynamic data
 - Each new utility needs a `pipeAlias` that is globally unique
 - Tests live in `tests/<plugin>/<utility>.test.ts`
@@ -500,9 +505,9 @@ Contributions are welcome! Here's how to get started:
 
 ### Reporting issues
 
-Please use [GitHub Issues](https://github.com/your-username/dsh/issues) with:
+Please open a [GitHub Issue](https://github.com/your-username/dsh/issues) and include:
 - Your OS and Node.js version (`node --version`)
-- The command you ran (or TUI steps)
+- The exact command you ran (or TUI steps taken)
 - Expected vs actual behaviour
 
 ---
