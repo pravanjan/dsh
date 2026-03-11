@@ -1,0 +1,60 @@
+{
+  "name": "dsh",
+  "version": "1.0.0",
+  "description": "Interactive CLI developer toolkit",
+  "type": "module",
+  "bin": {
+    "devtool": "./dist/devtool.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "devtool",
+    "devtool-plugin",
+    "cli",
+    "developer",
+    "toolkit"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cli-highlight": "^2.1.11",
+    "clipboardy": "^4.0.0",
+    "dayjs": "^1.11.10",
+    "diff": "^5.2.0",
+    "fast-xml-parser": "^5.5.1",
+    "generate-password": "^1.7.1",
+    "ink": "^5.0.1",
+    "ink-select-input": "^6.0.0",
+    "ink-spinner": "^5.0.0",
+    "ink-text-input": "^6.0.0",
+    "js-yaml": "^4.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "papaparse": "^5.4.1",
+    "react": "^18.2.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/diff": "^5.2.1",
+    "@types/js-yaml": "^4.0.9",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/node": "^20.11.0",
+    "@types/papaparse": "^5.3.14",
+    "@types/react": "^18.2.48",
+    "@types/uuid": "^9.0.7",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  }
+}
