@@ -4,7 +4,7 @@
   "description": "Interactive CLI developer toolkit",
   "type": "module",
   "bin": {
-    "dsh": "./dist/devtool.js"
+    "dsh": "dist/devtool.js"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -26,8 +26,18 @@
     "developer",
     "toolkit"
   ],
-  "author": "",
+  "author": "pravanjan",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pravanjan/dsh.git"
+  },
+  "homepage": "https://github.com/pravanjan/dsh#readme",
+  "files": [
+    "dist",
+    "README.md",
+    "PLUGIN_GUIDE.md"
+  ],
   "dependencies": {
     "cli-highlight": "^2.1.11",
     "clipboardy": "^4.0.0",
