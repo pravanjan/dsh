@@ -1,5 +1,5 @@
 {
-  "name": "dsh",
+  "name": "@pravanjan/dsh",
   "version": "1.0.0",
   "description": "Interactive CLI developer toolkit",
   "type": "module",
@@ -35,8 +35,7 @@
   "homepage": "https://github.com/pravanjan/dsh#readme",
   "files": [
     "dist",
-    "README.md",
-    "PLUGIN_GUIDE.md"
+    "README.md"
   ],
   "dependencies": {
     "cli-highlight": "^2.1.11",
