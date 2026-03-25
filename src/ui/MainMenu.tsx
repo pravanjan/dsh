@@ -15,7 +15,7 @@ export function MainMenu({ plugins, onSelect }: Props) {
 
   const items = plugins.map((p) => ({
     label: `${p.label.padEnd(22)} ${p.description}`,
-    value: p,
+    value: p.id,
   }));
 
   return (
@@ -30,9 +30,10 @@ export function MainMenu({ plugins, onSelect }: Props) {
       <Box marginTop={1}>
         <SelectInput
           items={items}
-          onSelect={(item: { label: string; value: PluginManifest }) =>
-            onSelect(item.value)
-          }
+          onSelect={(item: { label: string; value: string }) => {
+            const plugin = plugins.find((p) => p.id === item.value);
+            if (plugin) onSelect(plugin);
+          }}
         />
       </Box>
       <Box marginTop={1}>

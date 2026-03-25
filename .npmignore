@@ -2,6 +2,7 @@
 src/
 bin/
 tests/
+.npmrc
 
 # Config files
 tsconfig.json
