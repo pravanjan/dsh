@@ -31,14 +31,14 @@ if (argv.includes("--version") || argv.includes("-v")) {
 // --help / -h
 if (argv.includes("--help") || argv.includes("-h")) {
   console.log(`
-DevTool CLI — developer toolkit for the terminal
+dsh — developer toolkit for the terminal
 
 Usage:
-  devtool                         Launch interactive TUI
-  devtool <alias> [--flag value]  Pipe/stdin mode
-  devtool --version               Print version
-  devtool --help                  Show this help
-  devtool --debug                 Enable debug output in pipe mode
+  dsh                         Launch interactive TUI
+  dsh <alias> [--flag value]  Pipe/stdin mode
+  dsh --version               Print version
+  dsh --help                  Show this help
+  dsh --debug                 Enable debug output in pipe mode
 
 Pipe aliases:
   Encoding    base64:encode  base64:decode  url:encode    url:decode
@@ -64,13 +64,13 @@ Pipe aliases:
               str:diff (--textB <text>)
 
 Examples:
-  echo "hello"          | devtool base64:encode
-  echo "aGVsbG8="       | devtool base64:decode
-  cat token.txt         | devtool jwt:decode
-  echo '{"a":1}'        | devtool json:format
-  date +%s              | devtool ts:todate
-  echo "hello_world"    | devtool str:camel
-  echo "msg"            | devtool hash:hmac --key mysecret
+  echo "hello"          | dsh base64:encode
+  echo "aGVsbG8="       | dsh base64:decode
+  cat token.txt         | dsh jwt:decode
+  echo '{"a":1}'        | dsh json:format
+  date +%s              | dsh ts:todate
+  echo "hello_world"    | dsh str:camel
+  echo "msg"            | dsh hash:hmac --key mysecret
 `.trim());
   process.exit(0);
 }

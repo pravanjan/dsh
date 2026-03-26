@@ -5,8 +5,8 @@ export async function handlePipe(registry: PluginRegistry, argv: string[]): Prom
 
   if (!alias || alias.startsWith("-")) {
     process.stderr.write(
-      "Usage: devtool <pipeAlias> [--flag value]\n" +
-        "Run `devtool --help` for a full list of pipe aliases.\n"
+      "Usage: dsh <pipeAlias> [--flag value]\n" +
+        "Run `dsh --help` for a full list of pipe aliases.\n"
     );
     process.exit(2);
   }
@@ -15,7 +15,7 @@ export async function handlePipe(registry: PluginRegistry, argv: string[]): Prom
   if (!utility) {
     process.stderr.write(
       `Unknown pipe alias: "${alias}"\n` +
-        "Run `devtool --help` for a full list of pipe aliases.\n"
+        "Run `dsh --help` for a full list of pipe aliases.\n"
     );
     process.exit(2);
   }

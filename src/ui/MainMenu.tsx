@@ -22,7 +22,7 @@ export function MainMenu({ plugins, onSelect }: Props) {
     <Box flexDirection="column" paddingX={1} paddingY={1}>
       <Box marginBottom={1}>
         <Text bold color="cyan">
-          DevTool CLI
+          dsh
         </Text>
         <Text dimColor>  v1.0.0  —  developer toolkit</Text>
       </Box>
