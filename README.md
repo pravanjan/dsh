@@ -1,49 +1,50 @@
 # dsh — Developer Shell Toolkit
 
-> A fast, interactive CLI toolkit for everyday developer tasks. Runs entirely on your local machine — no network calls, no telemetry, no accounts required.
+> A fast, simple CLI tool for everyday developer tasks. Runs fully on your own computer — no internet needed, no accounts, no tracking.
 
 [![Node.js](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen)](https://nodejs.org)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-261%20passing-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-285%20passing-brightgreen)](#testing)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)](https://www.typescriptlang.org)
 
 ---
 
 ## What is dsh?
 
-`dsh` bundles the tools developers reach for every day — Base64, JWT decoding, JSON formatting, UUID generation, hashing, regex testing, and more — into a single globally installable command. No more switching between browser tabs or one-off scripts.
+`dsh` is a tool that puts common developer tasks in one place. Things like encoding text, checking JWT tokens, formatting JSON, generating passwords, and more — all available from your terminal.
 
-It works in two modes:
+You do not need to open a browser or install many separate tools. Just install `dsh` once and use it anywhere.
 
-- **Interactive TUI** — arrow-key menus, text input forms, syntax-highlighted results, copy to clipboard
-- **Pipe / stdin mode** — compose with Unix tools in scripts and one-liners
+It works in two ways:
+
+- **Menu mode** — open a menu with arrow keys, pick what you want, type your input, see the result
+- **Script mode** — pass text through a pipe in your terminal commands
 
 ---
 
 ## Table of Contents
 
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Interactive TUI](#interactive-tui)
-- [Pipe Mode](#pipe-mode)
-  - [Encoding / Decoding](#encoding--decoding)
-  - [Hashing](#hashing)
-  - [JWT](#jwt)
-  - [Generators](#generators)
-  - [Format Converters](#format-converters)
-  - [Date / Time](#date--time)
-  - [String Utilities](#string-utilities)
-- [All Pipe Aliases](#all-pipe-aliases)
-- [Plugin System](#plugin-system)
-- [Development Setup](#development-setup)
-- [Project Structure](#project-structure)
+- [What you need first](#what-you-need-first)
+- [Install](#install)
+- [Try it now](#try-it-now)
+- [Menu mode (TUI)](#menu-mode-tui)
+- [Script mode (Pipe)](#script-mode-pipe)
+  - [Encoding and Decoding](#1-encoding-and-decoding)
+  - [Hashing](#2-hashing)
+  - [JWT Tokens](#3-jwt-tokens)
+  - [Generators](#4-generators)
+  - [Format Converters](#5-format-converters)
+  - [Date and Time](#6-date-and-time)
+  - [String Utilities](#7-string-utilities)
+- [All commands list](#all-commands-list)
+- [Plugins](#plugins)
+- [Development setup](#development-setup)
 - [Contributing](#contributing)
 - [License](#license)
 
 ---
 
-## Requirements
+## What you need first
 
 | Requirement | Version |
 |---|---|
@@ -53,316 +54,889 @@ It works in two modes:
 
 ---
 
-## Installation
+## Install
 
-### Global install (recommended)
+**Step 1 — Install the package:**
 
 ```bash
-npm install -g dsh
+npm install -g @pravanjandev/dsh
 ```
 
-### From source
+**Step 2 — Check it works:**
 
 ```bash
-git clone https://github.com/your-username/dsh.git
-cd dsh
-npm install
-npm run build
-npm link           # makes `dsh` available globally
+dsh --version
+```
+
+You should see a version number printed. That means it is ready to use.
+
+---
+
+## Try it now
+
+Here are three simple commands to try right away. Each one shows what goes in and what comes out.
+
+**Encode some text to Base64:**
+
+```bash
+echo "hello world" | dsh base64:encode
+```
+
+```
+aGVsbG8gd29ybGQ=
+```
+
+**Format a JSON string so it is easy to read:**
+
+```bash
+echo '{"name":"dsh","version":1}' | dsh json:format
+```
+
+```json
+{
+  "name": "dsh",
+  "version": 1
+}
+```
+
+**Generate a UUID:**
+
+```bash
+echo "1" | dsh gen:uuid4
+```
+
+```
+3f6c1e2a-9b4d-4f8a-a1e2-3c7f9d0b1234
 ```
 
 ---
 
-## Quick Start
+## Menu mode (TUI)
+
+Run `dsh` with no arguments to open the menu:
 
 ```bash
-# Launch the interactive TUI
 dsh
-
-# Or go straight to pipe mode
-echo "hello world"    | dsh base64:encode
-echo '{"name":"dsh"}' | dsh json:format
-date +%s              | dsh ts:todate
 ```
+
+You will see a screen like this:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  dsh — Developer Shell Toolkit                              │
+│                                                             │
+│  Pick a category:                                           │
+│                                                             │
+│  ❯ Encoding / Decoding   Encode and decode text            │
+│    Hashing               Create hashes from text           │
+│    JWT Tools             Read and check JWT tokens         │
+│    Generators            Make UUIDs, passwords, and more   │
+│    Format Converters     Change between JSON, YAML, XML    │
+│    Date / Time           Work with dates and timestamps    │
+│    String Utilities      Change how text looks             │
+│                                                             │
+│  [↑↓] Move up/down   [Enter] Pick   [Q] Quit               │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**How to navigate:**
+
+1. Use the **up** and **down** arrow keys to move between options
+2. Press **Enter** to pick one
+3. You will see a list of tools inside that category:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Encoding / Decoding                                        │
+│                                                             │
+│  ❯ Base64 Encode    Turn text into Base64                  │
+│    Base64 Decode    Turn Base64 back to text               │
+│    URL Encode       Make text safe for a web address       │
+│    URL Decode       Read URL-encoded text                  │
+│    HTML Encode      Make text safe for HTML                │
+│    HTML Decode      Read HTML-encoded text                 │
+│    Hex Encode       Turn text into hex                     │
+│    Hex Decode       Turn hex back to text                  │
+│    ← Back                                                   │
+│                                                             │
+│  [↑↓] Move   [Enter] Pick   [B] Back                       │
+└─────────────────────────────────────────────────────────────┘
+```
+
+4. Pick a tool and type your input:
+
+```
+┌─────────────────────────────────────────────┐
+│  Encoding / Decoding › Base64 Encode        │
+│                                             │
+│  Text to encode:                            │
+│  > hello world_                             │
+│                                             │
+│  [Enter] Run   [Esc] Back                   │
+└─────────────────────────────────────────────┘
+```
+
+5. Press **Enter** and see your result:
+
+```
+┌──────────────────────────────────────────────────────────┐
+│  Result                                                  │
+│                                                          │
+│  aGVsbG8gd29ybGQ=                                       │
+│                                                          │
+│  [C] Copy to clipboard   [R] Try again                   │
+│  [B] Back to menu        [Q] Quit                        │
+└──────────────────────────────────────────────────────────┘
+```
+
+**Keys you can use on the result screen:**
+
+| Key | What it does |
+|-----|--------------|
+| `C` | Copy the result to your clipboard |
+| `R` | Go back and try with different input |
+| `B` | Go back to the tool list |
+| `Q` | Close dsh |
 
 ---
 
-## Interactive TUI
+## Script mode (Pipe)
 
-Run `dsh` with no arguments to launch the menu-driven interface.
+You can also use `dsh` directly in your terminal without any menus. This is useful in scripts or when you want a quick result.
 
-```
-dsh — Developer Shell Toolkit
-
-Select a category:
-> Encoding / Decoding       Encode and decode strings using various formats
-  Hashing                   Generate cryptographic hashes and HMAC signatures
-  JWT Tools                 Decode and verify JSON Web Tokens
-  Generators                Generate UUIDs, passwords, and random strings
-  Format Converters         Convert between JSON, YAML, XML, and CSV formats
-  Date / Time               Unix timestamp conversion, timezone conversion, date diff
-  String Utilities          Case conversion, regex testing, and line diff
-
-[↑↓] Navigate  [Enter] Select  [Q] Quit
-```
-
-**Navigation flow:**
-
-```
-Main Menu  →  Sub Menu  →  Input Form  →  Result View
-               ↑                               |
-               └──────────── [B] Back ─────────┘
-```
-
-**Result view keyboard shortcuts:**
-
-| Key | Action |
-|-----|--------|
-| `C` | Copy result to clipboard |
-| `R` | Retry with new input |
-| `B` | Back to sub menu |
-| `Q` | Quit |
-
----
-
-## Pipe Mode
-
-When stdin is not a TTY, `dsh` runs non-interactively. The primary input always comes from stdin. Additional fields are passed as `--flag value` arguments.
-
-**Syntax:**
+**How it works:**
 
 ```bash
-echo "<input>" | dsh <alias> [--flag value]
+echo "your input" | dsh command:name
 ```
 
-**Exit codes:**
+The text before `|` is your input. The word after `dsh` is the command to run.
 
-| Code | Meaning |
-|------|---------|
-| `0` | Success |
-| `1` | Runtime error (bad input, parse failure, etc.) |
-| `2` | Unknown alias or missing alias argument |
+**If something goes wrong:**
 
-Add `--debug` to any command for full stack traces on errors.
+| Exit code | What it means |
+|-----------|---------------|
+| `0` | It worked |
+| `1` | Something went wrong (bad input, etc.) |
+| `2` | Command name not found |
+
+Add `--debug` to see more details when something fails:
+
+```bash
+echo "bad input" | dsh json:format --debug
+```
 
 ---
 
-### Encoding / Decoding
+### 1. Encoding and Decoding
+
+#### Base64
+
+**What it does:** Turns text into Base64 format, or turns Base64 back into normal text. Base64 is used in many web services and APIs.
+
+**Encode text:**
 
 ```bash
-# Base64
-echo "hello world"      | dsh base64:encode    # aGVsbG8gd29ybGQ=
-echo "aGVsbG8gd29ybGQ=" | dsh base64:decode    # hello world
+echo "hello world" | dsh base64:encode
+```
 
-# URL encoding
-echo "hello world & co" | dsh url:encode       # hello%20world%20%26%20co
-echo "hello%20world"    | dsh url:decode        # hello world
+```
+aGVsbG8gd29ybGQ=
+```
 
-# HTML encoding
+**Decode it back:**
+
+```bash
+echo "aGVsbG8gd29ybGQ=" | dsh base64:decode
+```
+
+```
+hello world
+```
+
+---
+
+#### URL Encoding
+
+**What it does:** Makes text safe to put in a web address. Spaces and special characters become `%20`, `%26`, etc.
+
+**Encode:**
+
+```bash
+echo "hello world & co" | dsh url:encode
+```
+
+```
+hello%20world%20%26%20co
+```
+
+**Decode:**
+
+```bash
+echo "hello%20world%20%26%20co" | dsh url:decode
+```
+
+```
+hello world & co
+```
+
+---
+
+#### HTML Encoding
+
+**What it does:** Makes text safe to put inside HTML. Characters like `<`, `>`, and `"` become `&lt;`, `&gt;`, and `&quot;`.
+
+**Encode:**
+
+```bash
 echo '<script>alert("xss")</script>' | dsh html:encode
-# &lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;
+```
 
-# Hex encoding
-echo "hello"            | dsh hex:encode        # 68656c6c6f
-echo "68656c6c6f"       | dsh hex:decode        # hello
+```
+&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;
+```
+
+**Decode:**
+
+```bash
+echo '&lt;b&gt;hello&lt;/b&gt;' | dsh html:decode
+```
+
+```
+<b>hello</b>
 ```
 
 ---
 
-### Hashing
+#### Hex Encoding
+
+**What it does:** Turns text into hex (base 16) numbers, or turns hex back into text.
+
+**Encode:**
 
 ```bash
-echo "hello" | dsh hash:md5      # 5d41402abc4b2a76b9719d911017c592
-echo "hello" | dsh hash:sha1     # aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d
-echo "hello" | dsh hash:sha256   # 2cf24dba5fb0a30e26e83b2ac5b9e29e...
-echo "hello" | dsh hash:sha512   # 9b71d224bd62f3785d96d46ad3ea3d73...
+echo "hello" | dsh hex:encode
+```
 
-# HMAC-SHA256 — pass the secret key as a flag
+```
+68656c6c6f
+```
+
+**Decode:**
+
+```bash
+echo "68656c6c6f" | dsh hex:decode
+```
+
+```
+hello
+```
+
+---
+
+### 2. Hashing
+
+**What it does:** Takes any text and creates a short fixed-length "fingerprint" of it. You cannot turn the hash back into the original text. This is used to check if files or passwords match.
+
+#### MD5
+
+```bash
+echo "hello" | dsh hash:md5
+```
+
+```
+5d41402abc4b2a76b9719d911017c592
+```
+
+#### SHA-1
+
+```bash
+echo "hello" | dsh hash:sha1
+```
+
+```
+aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d
+```
+
+#### SHA-256
+
+```bash
+echo "hello" | dsh hash:sha256
+```
+
+```
+2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824
+```
+
+#### SHA-512
+
+```bash
+echo "hello" | dsh hash:sha512
+```
+
+```
+9b71d224bd62f3785d96d46ad3ea3d73319bfbc2890caadae2dff72519673ca72323c3d99ba5c11d7c7acc6e14b8c5da0c4663475c2e5c3adef46f73bcdec043
+```
+
+#### HMAC-SHA256
+
+**What it does:** Like SHA-256 but also uses a secret key. Two people who know the same key can verify the message has not changed.
+
+```bash
 echo "my message" | dsh hash:hmac --key "my-secret-key"
 ```
 
+```
+b613679a0814d9ec772f95d778c35fc5ff1697c493715653c6c712144292c5ad
+```
+
 ---
 
-### JWT
+### 3. JWT Tokens
+
+**What it does:** JWT (JSON Web Token) is a common format used to pass user info between systems. You can use dsh to read what is inside a token, or to check if it is valid.
+
+#### Decode a JWT
+
+**What it does:** Shows what is inside a JWT token. You do not need a secret key for this.
 
 ```bash
-# Decode any JWT (no secret needed) — shows header, payload, and expiry status
 cat token.txt | dsh jwt:decode
+```
 
-# Verify signature with an HMAC secret
+```json
+{
+  "header": {
+    "alg": "HS256",
+    "typ": "JWT"
+  },
+  "payload": {
+    "sub": "1234567890",
+    "name": "John Doe",
+    "iat": 1516239022,
+    "iat_human": "2018-01-18 01:30:22",
+    "exp": 1716239022,
+    "exp_human": "2024-05-20 21:43:42"
+  },
+  "valid": true
+}
+```
+
+If the token has expired, you will see `"(EXPIRED)"` next to the expiry date.
+
+#### Verify a JWT
+
+**What it does:** Checks that the token was signed with the right secret key. Tells you if it is real or has been changed.
+
+```bash
 cat token.txt | dsh jwt:verify --secret "your-secret"
+```
 
-# Verify with an RSA public key
+```
+✓ Signature is valid
+```
+
+**Verify with an RSA key file:**
+
+```bash
 cat token.txt | dsh jwt:verify --secret "$(cat public.pem)"
 ```
 
-Decoded output includes human-readable `iat_human`, `exp_human`, and an `(EXPIRED)` marker when applicable.
-
 ---
 
-### Generators
+### 4. Generators
+
+**What it does:** Creates new random values — UUIDs, passwords, and random strings.
+
+#### UUID v4
+
+**What it does:** Generates a random unique ID. Used to identify things in databases and APIs.
 
 ```bash
-# UUIDs
-dsh gen:uuid4 < /dev/null     # 3f6c1e2a-9b4d-4f8a-a1e2-3c7f9d0b1234
-dsh gen:uuid7 < /dev/null     # time-ordered UUID v7
+echo "1" | dsh gen:uuid4
+```
 
-# Generate multiple at once
-echo "5" | dsh gen:uuid4      # 5 UUIDs, one per line
+```
+3f6c1e2a-9b4d-4f8a-a1e2-3c7f9d0b1234
+```
 
-# Password (configurable via flags)
+**Generate 5 at once:**
+
+```bash
+echo "5" | dsh gen:uuid4
+```
+
+```
+3f6c1e2a-9b4d-4f8a-a1e2-3c7f9d0b1234
+a1b2c3d4-e5f6-7890-abcd-ef1234567890
+7d3f9a12-4b6c-8e10-d2f4-a8b0c6d2e4f6
+c9e1a3b5-d7f9-1234-5678-90abcdef1234
+e2f4a6b8-c0d2-e4f6-1234-567890abcdef
+```
+
+#### UUID v7
+
+**What it does:** Like UUID v4, but the ID also includes a timestamp. This makes them sort in time order.
+
+```bash
+echo "1" | dsh gen:uuid7
+```
+
+```
+018f4e5a-1234-7abc-8def-9abcdef01234
+```
+
+#### Password
+
+**What it does:** Makes a random password. You can choose how long it should be and what characters to include.
+
+```bash
 echo "" | dsh gen:password --length 24 --symbols yes --numbers yes --uppercase yes
-
-# Random string with charset
-echo "" | dsh gen:random --length 32 --charset hex
-echo "" | dsh gen:random --length 16 --custom "ABCDEF0123456789"
 ```
+
+```
+X#9mK@2pL!vQ8nR$4wZ&6yT*
+```
+
+Options you can use:
+
+| Option | What it does | Example |
+|--------|--------------|---------|
+| `--length` | How many characters | `--length 20` |
+| `--symbols` | Include `!@#$%` etc. | `--symbols yes` |
+| `--numbers` | Include `0-9` | `--numbers yes` |
+| `--uppercase` | Include `A-Z` | `--uppercase yes` |
+
+#### Random String
+
+**What it does:** Makes a random string using a character set you choose.
+
+```bash
+echo "" | dsh gen:random --length 16 --charset hex
+```
+
+```
+3a7f2b9c0d1e4f5a
+```
+
+**Use only your own characters:**
+
+```bash
+echo "" | dsh gen:random --length 12 --custom "ABCDEF0123456789"
+```
+
+```
+A3F1B9C2D4E0
+```
+
+Available charsets: `hex`, `alpha`, `alphanumeric`, `numeric`
 
 ---
 
-### Format Converters
+### 5. Format Converters
+
+**What it does:** Changes data from one format to another. For example, from JSON to YAML, or from CSV to JSON.
+
+#### JSON — Pretty print
+
+**What it does:** Takes messy JSON and adds spaces and line breaks to make it easy to read.
 
 ```bash
-# JSON
-echo '{"name":"dsh","version":1}' | dsh json:format    # pretty-print
-echo '{ "a": 1 }'                 | dsh json:minify    # {"a":1}
-echo '{"valid":true}'              | dsh json:validate  # Valid JSON
+echo '{"name":"dsh","version":1,"active":true}' | dsh json:format
+```
 
-# YAML <-> JSON
-cat config.yaml      | dsh yaml:tojson
-echo '{"name":"dsh"}' | dsh json:toyaml
+```json
+{
+  "name": "dsh",
+  "version": 1,
+  "active": true
+}
+```
 
-# XML <-> JSON
-cat data.xml                    | dsh xml:tojson
-echo '{"root":{"key":"val"}}'   | dsh json:toxml
+**Change the indent size:**
 
-# CSV -> JSON
+```bash
+echo '{"a":1}' | dsh json:format --indent 4
+```
+
+```json
+{
+    "a": 1
+}
+```
+
+#### JSON — Minify
+
+**What it does:** Removes all spaces from JSON to make it as small as possible. Good for sending data over the internet.
+
+```bash
+echo '{ "name": "dsh", "version": 1 }' | dsh json:minify
+```
+
+```
+{"name":"dsh","version":1}
+```
+
+#### JSON — Validate
+
+**What it does:** Checks if your JSON text is written correctly.
+
+```bash
+echo '{"valid": true}' | dsh json:validate
+```
+
+```
+Valid JSON ✓
+```
+
+```bash
+echo '{bad json}' | dsh json:validate
+```
+
+```
+Invalid JSON: Unexpected token b in JSON at position 1
+```
+
+#### YAML to JSON
+
+**What it does:** Turns a YAML file into JSON format.
+
+```bash
+cat config.yaml | dsh yaml:tojson
+```
+
+For a file like:
+```yaml
+name: dsh
+version: 1
+active: true
+```
+
+You get:
+```json
+{
+  "name": "dsh",
+  "version": 1,
+  "active": true
+}
+```
+
+#### JSON to YAML
+
+**What it does:** Turns JSON into YAML format.
+
+```bash
+echo '{"name":"dsh","version":1}' | dsh json:toyaml
+```
+
+```yaml
+name: dsh
+version: 1
+```
+
+#### XML to JSON
+
+**What it does:** Turns an XML file into JSON format.
+
+```bash
+cat data.xml | dsh xml:tojson
+```
+
+For a file like:
+```xml
+<person><name>Alice</name><age>30</age></person>
+```
+
+You get:
+```json
+{
+  "person": {
+    "name": "Alice",
+    "age": "30"
+  }
+}
+```
+
+#### JSON to XML
+
+**What it does:** Turns JSON into XML format.
+
+```bash
+echo '{"person":{"name":"Alice","age":30}}' | dsh json:toxml
+```
+
+```xml
+<person>
+  <name>Alice</name>
+  <age>30</age>
+</person>
+```
+
+#### CSV to JSON
+
+**What it does:** Turns a CSV file (spreadsheet data) into JSON format. The first row is used as the field names.
+
+```bash
 cat users.csv | dsh csv:tojson
-cat data.csv  | dsh csv:tojson --header no    # without header row
+```
+
+For a file like:
+```
+name,age,city
+Alice,30,London
+Bob,25,Paris
+```
+
+You get:
+```json
+[
+  { "name": "Alice", "age": "30", "city": "London" },
+  { "name": "Bob", "age": "25", "city": "Paris" }
+]
+```
+
+**If the CSV has no header row:**
+
+```bash
+cat data.csv | dsh csv:tojson --header no
 ```
 
 ---
 
-### Date / Time
+### 6. Date and Time
+
+**What it does:** Helps you work with dates and times. Change Unix timestamps to readable dates, convert between time zones, or find the difference between two dates.
+
+#### Unix timestamp to readable date
+
+**What it does:** A Unix timestamp is a number that counts seconds since January 1, 1970. This command turns that number into a date you can read.
 
 ```bash
-# Unix timestamp -> human date
 echo "1700000000" | dsh ts:todate
-# Local : 2023-11-15 03:43:20
-# UTC   : 2023-11-14 22:13:20 UTC
-# ISO   : 2023-11-14T22:13:20.000Z
+```
 
-# Also accepts milliseconds automatically
+```
+Local : 2023-11-15 03:43:20
+UTC   : 2023-11-14 22:13:20 UTC
+ISO   : 2023-11-14T22:13:20.000Z
+```
+
+It also works with milliseconds (13-digit timestamps):
+
+```bash
 echo "1700000000000" | dsh ts:todate
+```
 
-# Human date -> Unix timestamp
-echo "2024-06-15 12:00:00" | dsh ts:fromdate
+**Get the current time as a readable date:**
 
-# Current time as Unix timestamp
+```bash
 date +%s | dsh ts:todate
+```
 
-# Timezone conversion (IANA timezone names)
+#### Readable date to Unix timestamp
+
+**What it does:** Turns a date you can read into a Unix timestamp number.
+
+```bash
+echo "2024-06-15 12:00:00" | dsh ts:fromdate
+```
+
+```
+1718445600
+```
+
+#### Convert between time zones
+
+**What it does:** Takes a date and time in one time zone and tells you what time it is in another time zone.
+
+```bash
 echo "2024-03-15 09:00:00" | dsh dt:tzconvert --from "America/New_York" --to "Asia/Kolkata"
-# 2024-03-15 09:00:00 America/New_York
-#   →
-# 2024-03-15 19:30:00 Asia/Kolkata
+```
 
-# Date diff
+```
+2024-03-15 09:00:00 America/New_York
+  →
+2024-03-15 19:30:00 Asia/Kolkata
+```
+
+Some common time zone names: `America/New_York`, `Europe/London`, `Asia/Tokyo`, `Asia/Kolkata`, `Australia/Sydney`
+
+#### Date difference
+
+**What it does:** Tells you how much time is between two dates.
+
+```bash
 echo "2024-01-01" | dsh dt:diff --end "2024-12-31"
-# Total  : 365d 0h 0m 0s
-# Days   : 365
-# Hours  : 8760
-# Minutes: 525600
+```
+
+```
+Total  : 365d 0h 0m 0s
+Days   : 365
+Hours  : 8760
+Minutes: 525600
 ```
 
 ---
 
-### String Utilities
+### 7. String Utilities
+
+**What it does:** Changes how text looks — like switching between camelCase and snake_case — or lets you test a pattern match, or compare two pieces of text.
+
+#### Change text case
+
+**What it does:** Changes a word or phrase from one naming style to another.
+
+**To camelCase:**
 
 ```bash
-# Case conversion (default: camelCase)
-echo "hello_world_foo" | dsh str:camel    # helloWorldFoo
+echo "hello_world_foo" | dsh str:camel
+```
 
-# Other targets via --target flag
-echo "hello world" | dsh str:camel --target pascal       # HelloWorld
-echo "hello world" | dsh str:camel --target snake        # hello_world
-echo "hello world" | dsh str:camel --target kebab        # hello-world
-echo "hello world" | dsh str:camel --target upper_snake  # HELLO_WORLD
-echo "HelloWorld"  | dsh str:camel --target lower        # hello world
+```
+helloWorldFoo
+```
 
-# Regex tester — returns match groups as JSON
+**Other styles using `--target`:**
+
+```bash
+echo "hello world" | dsh str:camel --target pascal
+```
+
+```
+HelloWorld
+```
+
+```bash
+echo "hello world" | dsh str:camel --target snake
+```
+
+```
+hello_world
+```
+
+```bash
+echo "hello world" | dsh str:camel --target kebab
+```
+
+```
+hello-world
+```
+
+```bash
+echo "hello world" | dsh str:camel --target upper_snake
+```
+
+```
+HELLO_WORLD
+```
+
+```bash
+echo "HelloWorld" | dsh str:camel --target lower
+```
+
+```
+hello world
+```
+
+All style options: `camel`, `pascal`, `snake`, `kebab`, `upper_snake`, `lower`
+
+#### Test a pattern (Regex)
+
+**What it does:** Checks if a pattern matches parts of your text. Returns all the matches it finds.
+
+```bash
 echo "The quick brown fox" | dsh str:regex --pattern "\b\w{5}\b" --flags gi
-# { "totalMatches": 2, "matches": [...] }
+```
 
-# Line diff — outputs unified diff format
+```json
+{
+  "totalMatches": 2,
+  "matches": [
+    { "match": "quick", "index": 4 },
+    { "match": "brown", "index": 10 }
+  ]
+}
+```
+
+#### Compare two texts (Diff)
+
+**What it does:** Shows what changed between two pieces of text. Lines added are marked with `+`, lines removed with `-`.
+
+```bash
 echo "line1\nline2\nline3" | dsh str:diff --textB "line1\nchanged\nline3"
 ```
 
+```diff
+  line1
+- line2
++ changed
+  line3
+```
+
 ---
 
-## All Pipe Aliases
+## All commands list
 
-| Alias | Description |
-|-------|-------------|
-| `base64:encode` | Base64 encode |
-| `base64:decode` | Base64 decode |
-| `url:encode` | URL percent-encode |
-| `url:decode` | URL percent-decode |
-| `html:encode` | HTML entity encode |
-| `html:decode` | HTML entity decode |
-| `hex:encode` | Hex encode |
-| `hex:decode` | Hex decode |
+| Command | What it does |
+|---------|-------------|
+| `base64:encode` | Encode to Base64 |
+| `base64:decode` | Decode from Base64 |
+| `url:encode` | Encode for use in a web address |
+| `url:decode` | Decode from web address format |
+| `html:encode` | Encode for use in HTML |
+| `html:decode` | Decode from HTML format |
+| `hex:encode` | Encode to hex |
+| `hex:decode` | Decode from hex |
 | `hash:md5` | MD5 hash |
 | `hash:sha1` | SHA-1 hash |
 | `hash:sha256` | SHA-256 hash |
 | `hash:sha512` | SHA-512 hash |
-| `hash:hmac` | HMAC-SHA256 (`--key`) |
-| `jwt:decode` | Decode JWT (no secret required) |
-| `jwt:verify` | Verify JWT signature (`--secret`) |
-| `gen:uuid4` | Generate UUID v4 |
-| `gen:uuid7` | Generate UUID v7 (time-ordered) |
-| `gen:password` | Generate password (`--length --symbols --numbers --uppercase`) |
-| `gen:random` | Random string (`--length --charset --custom`) |
+| `hash:hmac` | HMAC-SHA256 (needs `--key`) |
+| `jwt:decode` | Read a JWT token (no secret needed) |
+| `jwt:verify` | Check a JWT token (needs `--secret`) |
+| `gen:uuid4` | Make a UUID v4 |
+| `gen:uuid7` | Make a UUID v7 (includes time) |
+| `gen:password` | Make a password (`--length --symbols --numbers --uppercase`) |
+| `gen:random` | Make a random string (`--length --charset --custom`) |
 | `json:format` | Pretty-print JSON (`--indent 2\|4\|tab`) |
-| `json:minify` | Minify JSON |
-| `json:validate` | Validate JSON |
-| `yaml:tojson` | YAML → JSON |
-| `json:toyaml` | JSON → YAML |
-| `xml:tojson` | XML → JSON |
-| `json:toxml` | JSON → XML |
-| `csv:tojson` | CSV → JSON (`--header yes\|no`) |
-| `ts:todate` | Unix timestamp → human date |
-| `ts:fromdate` | Human date → Unix timestamp |
-| `dt:tzconvert` | Timezone conversion (`--from --to`) |
-| `dt:diff` | Date difference (`--end`) |
-| `str:camel` | Case conversion (`--target camel\|pascal\|snake\|kebab\|upper_snake\|lower`) |
-| `str:regex` | Regex tester (`--pattern --flags`) |
-| `str:diff` | Line diff (`--textB`) |
+| `json:minify` | Remove spaces from JSON |
+| `json:validate` | Check if JSON is correct |
+| `yaml:tojson` | Change YAML to JSON |
+| `json:toyaml` | Change JSON to YAML |
+| `xml:tojson` | Change XML to JSON |
+| `json:toxml` | Change JSON to XML |
+| `csv:tojson` | Change CSV to JSON (`--header yes\|no`) |
+| `ts:todate` | Change Unix timestamp to readable date |
+| `ts:fromdate` | Change readable date to Unix timestamp |
+| `dt:tzconvert` | Change time zone (`--from --to`) |
+| `dt:diff` | Find how many days/hours between two dates (`--end`) |
+| `str:camel` | Change text case (`--target camel\|pascal\|snake\|kebab\|upper_snake\|lower`) |
+| `str:regex` | Test a pattern against text (`--pattern --flags`) |
+| `str:diff` | Compare two pieces of text (`--textB`) |
 
 ---
 
-## Plugin System
+## Plugins
 
-`dsh` supports community plugins. Any plugin installed at `~/.devtool/plugins/<name>/index.js` is automatically discovered and loaded at startup.
+`dsh` lets you add your own tools. Any plugin you put in `~/.devtool/plugins/` is found and loaded when dsh starts.
 
-### Installing a community plugin
+### Install a plugin
 
 ```bash
-# Plugins are npm packages with the "devtool-plugin" keyword
 mkdir -p ~/.devtool/plugins
 cd ~/.devtool/plugins
 npm install --prefix my-plugin some-devtool-plugin
 ```
 
-### Writing your own plugin
+### Write your own plugin
 
-A plugin is a compiled `.js` file with a default export satisfying the `PluginManifest` interface:
+A plugin is a `.js` file with a default export. Here is a simple example:
 
 ```typescript
 import type { PluginManifest } from 'dsh';
 
 const plugin: PluginManifest = {
-  id: "my-plugin",           // must be globally unique
+  id: "my-plugin",           // must be unique
   label: "My Plugin",
   description: "Does something useful",
   version: "1.0.0",
@@ -370,14 +944,14 @@ const plugin: PluginManifest = {
     {
       id: "my-utility",
       label: "My Utility",
-      description: "Transforms input somehow",
-      pipeAlias: "my:util",  // must be globally unique
+      description: "Turns input into uppercase",
+      pipeAlias: "my:upper",  // must be unique
       inputs: [
         {
           name: "input",
-          label: "Text input",
+          label: "Text",
           type: "text",
-          placeholder: "Enter something",
+          placeholder: "Type something",
           required: true,
         },
       ],
@@ -392,67 +966,63 @@ const plugin: PluginManifest = {
 export default plugin;
 ```
 
-Place the compiled output at `~/.devtool/plugins/my-plugin/index.js` and run `dsh` — your utility will appear in the TUI and be reachable via its `pipeAlias`.
+Put the built file at `~/.devtool/plugins/my-plugin/index.js` and run `dsh`. Your tool will appear in the menu and work in script mode with `my:upper`.
 
-> See [`PLUGIN_GUIDE.md`](PLUGIN_GUIDE.md) for the complete authoring contract, TypeScript types, and publishing guidance.
+> See [`PLUGIN_GUIDE.md`](PLUGIN_GUIDE.md) for full details on how to write and publish a plugin.
 
 ---
 
-## Development Setup
+## Development setup
+
+If you want to work on the `dsh` source code:
 
 ```bash
-# 1. Clone
+# Step 1 — Get the code
 git clone https://github.com/your-username/dsh.git
 cd dsh
 
-# 2. Install dependencies
+# Step 2 — Install packages
 npm install
 
-# 3. Run tests
+# Step 3 — Run all tests
 npm test
 
-# 4. Watch mode for development
-npm run test:watch
-
-# 5. Build
+# Step 4 — Build
 npm run build
 
-# 6. Type check
-npm run lint
-
-# 7. Link globally to test the CLI
+# Step 5 — Link so you can test the `dsh` command
 npm link
 dsh --version
 ```
 
-### Scripts
+### Available scripts
 
-| Command | Description |
+| Command | What it does |
 |---------|-------------|
-| `npm run build` | Production build via tsup |
-| `npm run dev` | Watch mode build |
-| `npm test` | Run all 261 tests (vitest) |
-| `npm run test:watch` | Vitest in watch mode |
-| `npm run lint` | TypeScript type check (`tsc --noEmit`) |
-| `npm run prepublishOnly` | Runs build before `npm publish` |
+| `npm run build` | Build the project |
+| `npm run dev` | Build and watch for changes |
+| `npm test` | Run all 285 tests |
+| `npm run test:watch` | Run tests and re-run when files change |
+| `npm run lint` | Check TypeScript types |
+| `npm run prepublishOnly` | Runs before publishing to npm |
 
 ---
 
-## Project Structure
+## Project structure
 
 ```
 dsh/
 ├── bin/
-│   └── devtool.ts          # Entry point — pipe vs TUI dispatch
+│   └── devtool.ts          # Start here — decides menu or script mode
 ├── src/
-│   ├── app.tsx             # Root Ink app — TUI state machine
-│   ├── index.ts            # Library export (for plugin authors)
+│   ├── app.tsx             # Main menu app (Ink/React)
+│   ├── index.ts            # Exports for plugin authors
 │   ├── core/
-│   │   ├── PluginRegistry.ts
-│   │   ├── PipeHandler.ts
-│   │   └── ClipboardHelper.ts
+│   │   ├── PluginRegistry.ts   # Loads and stores plugins
+│   │   ├── PipeHandler.ts      # Handles script mode
+│   │   └── ClipboardHelper.ts  # Copy to clipboard
 │   ├── types/
-│   │   └── plugin.ts       # Shared TypeScript interfaces
+│   │   └── plugin.ts           # TypeScript type definitions
 │   ├── ui/
 │   │   ├── MainMenu.tsx
 │   │   ├── SubMenu.tsx
@@ -463,52 +1033,50 @@ dsh/
 │       ├── encoding/       # base64, url, html, hex
 │       ├── hashing/        # md5, sha, hmac
 │       ├── jwt/            # decode, verify
-│       ├── generators/     # uuid, password, randomString
+│       ├── generators/     # uuid, password, random string
 │       ├── converters/     # json, yaml, xml, csv
-│       ├── datetime/       # unixConverter, timezoneConverter, dateDiff
-│       └── strings/        # caseConverter, regexTester, diffViewer
-├── tests/                  # Mirrors src/plugins structure
-├── tsconfig.json
-├── tsup.config.ts
-├── vitest.config.ts
-└── package.json
+│       ├── datetime/       # timestamps, time zones, date diff
+│       └── strings/        # case, regex, diff
+└── tests/                  # One test file per tool
 ```
 
 ---
 
 ## Contributing
 
-Contributions are welcome. Here's how to get started:
+You are welcome to add new tools or fix bugs.
 
-1. **Fork** the repository and create a feature branch:
-   ```bash
-   git checkout -b feat/my-new-utility
-   ```
+**Steps to get started:**
 
-2. **Write your code.** Every utility must have a pure `run()` function and at least 3 unit tests.
+1. Fork the project and make a new branch:
 
-3. **Run the full test suite before opening a PR:**
-   ```bash
-   npm test
-   npm run lint
-   ```
+```bash
+git checkout -b feat/my-new-tool
+```
 
-4. **Open a pull request** with a clear description of what you've added and why.
+2. Write your code. Each tool must have a `run()` function and at least 3 tests.
 
-### Guidelines
+3. Run the tests to make sure everything passes:
 
-- All `run()` functions must be **pure** — no I/O, no side effects, no `process` access
-- No `any` types — use `unknown` with type guards for dynamic data
-- Each new utility needs a `pipeAlias` that is globally unique
-- Tests live in `tests/<plugin>/<utility>.test.ts`
-- Keep the `PluginManifest` interface contract intact
+```bash
+npm test
+npm run lint
+```
 
-### Reporting issues
+4. Open a pull request with a short description of what you added and why.
 
-Please open a [GitHub Issue](https://github.com/your-username/dsh/issues) and include:
+**Rules to follow:**
+- The `run()` function must not call any external service or read/write files
+- No `any` types in TypeScript — use `unknown` if the type is not known
+- Each tool needs a unique `pipeAlias`
+- Tests go in `tests/<plugin>/<tool>.test.ts`
+
+**Found a bug?**
+
+Open a [GitHub Issue](https://github.com/your-username/dsh/issues) and include:
 - Your OS and Node.js version (`node --version`)
-- The exact command you ran (or TUI steps taken)
-- Expected vs actual behaviour
+- The exact command you ran
+- What you expected to see vs what you got
 
 ---
 
@@ -519,5 +1087,5 @@ Please open a [GitHub Issue](https://github.com/your-username/dsh/issues) and in
 ---
 
 <div align="center">
-  <sub>Built with Node.js · TypeScript · Ink · Runs 100% locally</sub>
+  <sub>Built with Node.js · TypeScript · Ink · Runs 100% on your machine</sub>
 </div>
